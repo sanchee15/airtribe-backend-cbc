@@ -1,0 +1,19 @@
+{
+  "name": "airtribe-backend-cbc",
+  "version": "1.0.0",
+  "description": "Demo code for he Airtribe Backend CBC",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mysql2": "^3.2.4",
+    "nodemon": "^2.0.22",
+    "sequelize": "^6.31.0"
+  }
+}
