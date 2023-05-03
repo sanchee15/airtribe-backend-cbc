@@ -4,7 +4,7 @@ const Sequalize = require('sequelize');
 const sequalize = new Sequalize(
 		'bookmyshow',
 		'root',
-		'root',{
+		'#add password here',{
 			dialect: 'mysql',
 			host: 'localhost'
 		}

@@ -1,0 +1,65 @@
+CREATE TABLE ratings_big(
+    id INT NOT NULL AUTO_INCREMENT,
+    userId INT NOT NULL,
+    movieId BIGINT NOT NULL,
+   	rating DECIMAL NOT NULL,
+    PRIMARY KEY (id)
+);
+
+
+use bookmyshow;
+
+/*
+ * secure_file_priv = "" to /usr/local/etc/my.cnf 
+ * ps -ax | grep mysql 
+ * sudo kill -9 pid
+ * sudo /usr/local/mysql/bin/mysqld --user=_mysql --basedir=/usr/local/mysql --datadir=/usr/local/mysql/data --plugin-dir=/usr/local/mysql/lib/plugin --log-error=/usr/local/mysql/data/mysqld.local.err --pid-file=/usr/local/mysql/data/mysqld.local.pid --keyring-file-data=/usr/local/mysql/keyring/keyring --early-plugin-load=keyring_file=keyring_file.so &
+ */
+
+/*
+
+SHOW GLOBAL VARIABLES LIKE 'local_infile';
+SET GLOBAL local_infile=1;
+
+mysql --local-infile=1 -u root -pAirtribe@23 -h localhost -D bookmyshow
+*/
+
+
+
+
+/*CREATE TABLE ratings_small(
+    id INT NOT NULL AUTO_INCREMENT,
+    userId INT NOT NULL,
+    movieId BIGINT NOT NULL,
+    rating DECIMAL NOT NULL,
+    PRIMARY KEY (id)
+);
+*/
+
+/* LOAD DATA LOCAL INFILE '/Users/sancheetakaushal/Downloads/ratings.csv'  INTO TABLE ratings_big FIELDS TERMINATED BY ','  ENCLOSED BY '"'  LINES TERMINATED BY '\n' IGNORE 1 ROWS (userId, movieId, rating); */
+
+SELECT * from ratings_big where userId = 1; - 37 s 
+
+SELECT * from ratings_small where userId = 1; - 85 ms 
+
+create index userIdx on ratings_big (userId); > 1 min 
+
+SELECT * from ratings_big where userId = 7;
+
+DROP index userIdx on ratings_big;
+
+
+/*DROP TABLE ratings_small ;
+
+/*SELECT count(*) from ratings_big;
+
+
+
+
+/*CREATE TABLE ratings_big(
+    id INT NOT NULL AUTO_INCREMENT,
+    userId INT NOT NULL,
+    movieId BIGINT NOT NULL,
+    rating DECIMAL(5,2) NOT NULL,
+    PRIMARY KEY (id)
+);*/
