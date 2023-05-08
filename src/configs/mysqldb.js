@@ -1,20 +1,6 @@
 const Sequalize = require('sequelize');
 
 
-// const sequalize = new Sequalize(
-// 		'instamart',
-// 		'root',
-// 		'Airtribe@23',{
-// 			dialect: 'mysql',
-// 			host: 'localhost',
-// 			pool: {
-//     			max: 5,
-//     			min: 0,
-//     			idle: 10000
-//   			}
-// 		});
-
-
 const sequalize = new Sequalize(
 		'instamart',
 		'root',
