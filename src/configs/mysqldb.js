@@ -15,7 +15,7 @@ const sequalize = new Sequalize(
 		});
 
 
-const connectToDB = async ()=>{
+const connectToMysql = async ()=>{
 	try{
 		await sequalize.authenticate();
 		console.log("Successfully connected to the database.");
@@ -26,4 +26,4 @@ const connectToDB = async ()=>{
 }
 
 
-module.exports = {sequalize, connectToDB}
+module.exports = {sequalize, connectToMysql}

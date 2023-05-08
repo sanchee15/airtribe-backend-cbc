@@ -1,6 +1,7 @@
 const express = require('express');
 const apiRoutes = require('./src/routes/products');
-const {sequalize, connectToDB} = require('./src/configs/mysqldb');
+const {sequalize, connectToMysql} = require('./src/configs/mysqldb');
+const {redisClient, connectToRedis} = require('./src/configs/redis');
 
 const app = express();
 const PORT = 3000;
@@ -14,5 +15,6 @@ app.get('/', (request, response) => {
 
 app.listen(PORT, async () => {
   console.log('Server is running at http://localhost:${PORT}');
-  await connectToDB();
+  await connectToMysql();
+  await connectToRedis();
 });
