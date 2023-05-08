@@ -3,6 +3,7 @@ const apiRoutes = require('./src/routes/products');
 const {sequalize, connectToMysql} = require('./src/configs/mysqldb');
 const {redisClient, connectToRedis} = require('./src/configs/redis');
 const {mongoClient, connectToMongo} = require('./src/configs/mongodb');
+const {ESClient, connectToES} = require('./src/configs/elasticsearch');
 
 const app = express();
 const PORT = 3000;
@@ -19,4 +20,5 @@ app.listen(PORT, async () => {
   await connectToMysql();
   await connectToRedis();
   await connectToMongo();
+  await connectToES();
 });

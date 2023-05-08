@@ -1,4 +1,3 @@
-// const Mongo = require('mongodb').MongoClient;
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
 const password = encodeURIComponent("Airtribe@23");
