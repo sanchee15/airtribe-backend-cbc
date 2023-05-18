@@ -1,12 +1,11 @@
 const express = require('express');
-const apiRoutes = require('./routes');
-const {sequalize, connectToDB} = require('./db');
-
+const apiRoutes = require('./src/routes/products');
+const {sequalize, connectToDB} = require('./src/configs/mysqldb');
 
 const app = express();
 const PORT = 3000;
 
-
+app.use(express.json());
 app.use('/api', apiRoutes);
 
 app.get('/', (request, response) => {
