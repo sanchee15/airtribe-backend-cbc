@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const sequalize = require('../configs/mysqldb').sequalize;
 const Product = require('../models/products');
 
 
@@ -30,7 +31,7 @@ router.post('/products', async(request, response) => {
 router.get('/product/:id', async(request, response) => {
 	const product = Product.findOne({
 		where: {
-			id: request.params.id
+			id: parseInt(request.params.id)
 		}
 	});
 	await product.then(function(success){
@@ -46,7 +47,7 @@ router.patch('/product/:id', async(request, response) => {
 
 	const product = Product.update(data, {
 		where: {
-			id: request.params.id,
+			id: parseInt(request.params.id),
 		}
 	});
 
@@ -56,5 +57,6 @@ router.patch('/product/:id', async(request, response) => {
 		response.json(error);
 	});
 });
+
 
 module.exports = router;
