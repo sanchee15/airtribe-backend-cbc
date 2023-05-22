@@ -61,34 +61,39 @@ router.patch('/product/:id', async(request, response) => {
 router.patch('/product/:id/stock_update_self_managed', async(request, response) => {
 	// Assuming Product ID and Product ID + 1 represent the same product type
 	const data = request.body;
+	const requested_id = parseInt(request.params.id);
+	id_list = [requested_id, requested_id+1]
 	const transaction = await sequalize.transaction()
 	try{
 		await Product.update(data, {
 			where: {
-				id: request.params.id,
+				id: requested_id,
 			}, transaction
 		})
 		// throw Error ('Error')
 		await Product.update(data, {
 				where: {
-					id: parseInt(request.params.id) + 1,
+					id: requested_id + 1,
 				}, transaction
 			})
 		await transaction.commit();
-		response.status(200).json({"message": "Both products updated"});
+		const products = await Product.findAll({
+			where:{
+				id: id_list
+			}
+		})
+		response.status(200).json(products);
 	} catch (e) {
 		await transaction.rollback();
+		console.log(e);
 		response.json({"message": "Transaction Rollbacked"});
 	}
 });
 
 
 router.patch('/product/:id/stock_update_managed', async(request, response) => {
-	// Assuming Product ID and Product ID + 1 represent the same product type
 	const data = request.body;
 	const requested_id = parseInt(request.params.id);
-	product_dict = {};
-	id_list = [requested_id, requested_id+1]
 	try{
 		const result = await sequalize.transaction(async (t) => {
 			const product1 = await Product.update(data,{
@@ -97,21 +102,16 @@ router.patch('/product/:id/stock_update_managed', async(request, response) => {
 				},
 				transaction: t
 			});
-			const product2 = await Product.update(data, {
-				where: {
-					id: requested_id + 1,
-				},
-				transaction: t
-			});
 			const products = await Product.findAll({
 				where:{
-					id: id_list
+					id: requested_id
 				},
 				transaction: t
 			})
 			// throw new Error();
 			response.status(200).json(products);
 		});
+		// throw new Error();
 	} catch (e) {
 		console.log(e);
 		response.json({"message": "Transaction Rollbacked"});
@@ -132,7 +132,11 @@ router.post('/product/:id/stock_update_with_lock', async(request, response) => {
 				transaction: t
 			});
 			product.stock = data.stock;
-			// wait(1000);
+			const same_product = await Product.update({'stock': 11}, {
+				where: {
+					id: request.params.id,
+				}
+			})
 			await product.save({transaction: t});
 			response.status(200).json({"message": product});
 		});
