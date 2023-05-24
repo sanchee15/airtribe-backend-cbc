@@ -4,8 +4,6 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 const password = encodeURIComponent("Airtribe@23");
 const url = "mongodb+srv://sanchee:" + password + "@airtribecbc.xfklagj.mongodb.net/?retryWrites=true&w=majority";
 
-console.log(url);
-
 const mongoClient = new MongoClient(url, {
   serverApi: {
     version: ServerApiVersion.v1,
