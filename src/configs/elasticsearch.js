@@ -1,8 +1,20 @@
-var elasticsearch = require("elasticsearch");
+var elasticsearch = require("@elastic/elasticsearch");
+
+// const ESClient = new elasticsearch.Client({
+//     nodes: [
+//         { host: 'localhost', port: 9200 }
+//     ],
+//     auth: {
+//         username: 'elastic', // Replace with the actual username
+//         password: 'changeme', // Replace with the actual password
+//     },
+// });
 
 const ESClient = new elasticsearch.Client({
-    hosts: ["http://localhost:9200"]
-});
+    node: "http://localhost:9200"
+})
+
+console.log(ESClient);
 
 const connectToES = async ()=>{
     try{

@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 
-// const password = encodeURIComponent("Airtribe@23");
-// const url = "mongodb+srv://sanchee:" + password + "@airtribecbc.xfklagj.mongodb.net/test?retryWrites=true&w=majority";
+const password = encodeURIComponent("Airtribe@23");
+const url = "mongodb+srv://sanchee:" + password + "@airtribecbc.xfklagj.mongodb.net/test?retryWrites=true&w=majority";
 
-const url = "mongodb://localhost:26061,localhost:26062/test";
+// const url = "mongodb://localhost:26061,localhost:26062/test";
 
 const mongoConnection = mongoose.connect(url, {
   useNewUrlParser: true,
