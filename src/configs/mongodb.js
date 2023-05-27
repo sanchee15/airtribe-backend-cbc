@@ -16,12 +16,12 @@ const connectToMongo = async ()=>{
 		db.once('open', () => {
 	  		console.log('Connected to MongoDB');
 		});
-		// console.log(db.printShardingStatus());
 }
 
 module.exports = {mongoConnection, connectToMongo}
 
 
+// Code to connect with mongo without Mongoose
 // const { MongoClient, ServerApiVersion } = require('mongodb');
 // const mongoClient = new MongoClient(url, {
 //   serverApi: {
