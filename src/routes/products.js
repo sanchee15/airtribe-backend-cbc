@@ -1,12 +1,34 @@
 const express = require('express');
 const router = express.Router();
 const sequalize = require('../configs/mysqldb').sequalize;
-const Product = require('../models/products');
+const Product = require('../models/products').Product;
+const ProductAttributes = require('../models/products').ProductAttributes;
 
 
 router.get('/products', async(request, response) => {
-	const products = await Product.findAll();
-	response.status(200).json(products);
+	const limit = parseInt(request.query.limit) || 10; // Default limit is 10
+    const offset = parseInt(request.query.offset) || 0; // Default offset is 0
+
+    const products = await Product.findAll({
+        limit: limit,
+        offset: offset
+    });
+
+    response.status(200).json(products);
+});
+
+
+router.get('/product/:id', async(request, response) => {
+	const product = Product.findOne({
+		where: {
+			id: parseInt(request.params.id)
+		}
+	});
+	await product.then(function(success){
+		response.status(200).json(success);
+	}).catch(function(error){
+		response.json(error);
+	});
 });
 
 
@@ -28,17 +50,33 @@ router.post('/products', async(request, response) => {
 });
 
 
-router.get('/product/:id', async(request, response) => {
-	const product = Product.findOne({
-		where: {
-			id: parseInt(request.params.id)
-		}
-	});
-	await product.then(function(success){
-		response.status(200).json(success);
+router.post('/product_attributes', async(request, response) => {
+	const {product_id, attr_name, attr_value} = request.body;
+
+	const product_attr = ProductAttributes.build({
+		'productId': product_id,
+		'attribute_name': attr_name,
+		'attribute_value': attr_value
+	})
+
+	await product_attr.save().then(function(success){
+		response.status(201).json(success);
 	}).catch(function(error){
 		response.json(error);
 	});
+	
+});
+
+
+
+router.post('/products/bulk_create', async(request, response) => {
+    productDetailsList = request.body;
+
+    await Product.bulkCreate(productDetailsList).then(function(success){
+        response.status(200).json(success);
+    }).catch(function(error){
+        response.json(error);
+    });
 });
 
 
@@ -58,36 +96,16 @@ router.patch('/product/:id', async(request, response) => {
 	});
 });
 
-router.patch('/product/:id/stock_update_self_managed', async(request, response) => {
-	// Assuming Product ID and Product ID + 1 represent the same product type
-	const data = request.body;
-	const requested_id = parseInt(request.params.id);
-	id_list = [requested_id, requested_id+1]
-	const transaction = await sequalize.transaction()
-	try{
-		await Product.update(data, {
-			where: {
-				id: requested_id,
-			}, transaction
-		})
-		// throw Error ('Error')
-		await Product.update(data, {
-				where: {
-					id: requested_id + 1,
-				}, transaction
-			})
-		await transaction.commit();
-		const products = await Product.findAll({
-			where:{
-				id: id_list
-			}
-		})
-		response.status(200).json(products);
-	} catch (e) {
-		await transaction.rollback();
-		console.log(e);
-		response.json({"message": "Transaction Rollbacked"});
-	}
+
+router.get('/product_with_attributes/:id', async(request, response) => {
+    const product = await Product.findOne({
+        where: {
+            id: parseInt(request.params.id)
+        },
+        include: ProductAttributes
+    });
+
+    response.status(200).send(JSON.stringify(product, null, 2));
 });
 
 
@@ -116,34 +134,6 @@ router.patch('/product/:id/stock_update_managed', async(request, response) => {
 		console.log(e);
 		response.json({"message": "Transaction Rollbacked"});
 	}
-});
-
-
-router.post('/product/:id/stock_update_with_lock', async(request, response) => {
-	const data = request.body;
-
-	try{
-		const result = await sequalize.transaction(async (t) => {
-			const product = await Product.findOne({
-				where: {
-					id: request.params.id,
-				},
-				lock: t.LOCK.UPDATE,
-				transaction: t
-			});
-			product.stock = data.stock;
-			const same_product = await Product.update({'stock': 11}, {
-				where: {
-					id: request.params.id,
-				}
-			})
-			await product.save({transaction: t});
-			response.status(200).json({"message": product});
-		});
-	} catch (error){
-		response.json(error);
-	}
-
 });
 
 

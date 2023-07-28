@@ -5,7 +5,7 @@ const Sequalize = require('sequelize');
 // Sequalize (database_name, user_name, password, {dialect: database, host: host})
 
 const sequalize = new Sequalize(
-		'instamart', 
+		'c2_lecture_2', 
 		'root',
 		'Airtribe@23',{
 			dialect: 'mysql',
