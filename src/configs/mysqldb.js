@@ -9,12 +9,7 @@ const sequalize = new Sequalize(
 		'root',
 		'Airtribe@23',{
 			dialect: 'mysql',
-			host: 'localhost',
-			pool: {
-    			max: 5,
-    			min: 0,
-    			idle: 10000
-  			}
+			host: 'localhost'
 		});
 
 // Check the connection to database - calling authenticate method
