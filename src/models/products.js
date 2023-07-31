@@ -23,7 +23,15 @@ const Product = sequalize.define('product', {
 		type: DataTypes.INTEGER,
 		allowNull: false
 	}
+}, {
+	indexes: [
+	{
+      unique: true,
+      name: 'product_name_idx',
+      fields: ['name']
+    }]
 })
+
 
 const ProductAttributes = sequalize.define('product_attributes', {
 	id: {
@@ -45,4 +53,4 @@ ProductAttributes.belongsTo(Product);
 // Execute the sync command to run migrations 
 // sequalize.sync()
 
-module.exports = {Product, ProductAttributes} 
+module.exports = {Product, ProductAttributes}

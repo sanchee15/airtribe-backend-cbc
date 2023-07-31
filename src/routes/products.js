@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const sequalize = require('../configs/mysqldb').sequalize;
+const redisClient = require('../configs/redis').redisClient;
 const Product = require('../models/products').Product;
 const ProductAttributes = require('../models/products').ProductAttributes;
 
@@ -13,7 +14,6 @@ router.get('/products', async(request, response) => {
         limit: limit,
         offset: offset
     });
-
     response.status(200).json(products);
 });
 
@@ -33,20 +33,37 @@ router.get('/product/:id', async(request, response) => {
 
 
 router.post('/products', async(request, response) => {
-	const {name, price, stock} = request.body;
+    const {name, price, stock} = request.body;
 
-	const product = Product.build({
-		'name': name,
-		'price': price,
-		'stock': stock
-	})
+    const product = Product.build({
+        'name': name,
+        'price': price,
+        'stock': stock
+    })
 
-	await product.save().then(function(success){
-		response.status(201).json(success);
-	}).catch(function(error){
-		response.json(error);
-	});
-	
+    await product.save().then(function(success){
+        response.status(201).json(success);
+    }).catch(function(error){
+        response.json(error);
+    });
+    
+});
+
+
+router.get('/products/', async(request, response) => {
+    const products = await Product.findAll();
+    response.status(200).json(products);
+});
+
+
+router.post('/products/bulk_create', async(request, response) => {
+    productDetailsList = request.body;
+
+    await Product.bulkCreate(productDetailsList).then(function(success){
+        response.status(200).json(success);
+    }).catch(function(error){
+        response.json(error);
+    });
 });
 
 
@@ -68,32 +85,20 @@ router.post('/product_attributes', async(request, response) => {
 });
 
 
+router.patch('/product/:id', async(request, response) => {
+    const data = request.body;
 
-router.post('/products/bulk_create', async(request, response) => {
-    productDetailsList = request.body;
+    const product = Product.update(data, {
+        where: {
+            id: parseInt(request.params.id),
+        }
+    });
 
-    await Product.bulkCreate(productDetailsList).then(function(success){
+    await product.then(function(success){
         response.status(200).json(success);
     }).catch(function(error){
         response.json(error);
     });
-});
-
-
-router.patch('/product/:id', async(request, response) => {
-	const data = request.body;
-
-	const product = Product.update(data, {
-		where: {
-			id: parseInt(request.params.id),
-		}
-	});
-
-	await product.then(function(success){
-		response.status(200).json(success);
-	}).catch(function(error){
-		response.json(error);
-	});
 });
 
 
@@ -110,31 +115,30 @@ router.get('/product_with_attributes/:id', async(request, response) => {
 
 
 router.patch('/product/:id/stock_update_managed', async(request, response) => {
-	const data = request.body;
-	const requested_id = parseInt(request.params.id);
-	try{
-		const result = await sequalize.transaction(async (t) => {
-			const product1 = await Product.update(data,{
-				where: {
-					id: requested_id,
-				},
-				transaction: t
-			});
-			const products = await Product.findAll({
-				where:{
-					id: requested_id
-				},
-				transaction: t
-			})
-			// throw new Error();
-			response.status(200).json(products);
-		});
-		// throw new Error();
-	} catch (e) {
-		console.log(e);
-		response.json({"message": "Transaction Rollbacked"});
-	}
+    const data = request.body;
+    const requested_id = parseInt(request.params.id);
+    try{
+        const result = await sequalize.transaction(async (t) => {
+            const product1 = await Product.update(data,{
+                where: {
+                    id: requested_id,
+                },
+                transaction: t
+            });
+            const products = await Product.findAll({
+                where:{
+                    id: requested_id
+                },
+                transaction: t
+            })
+            // throw new Error();
+            response.status(200).json(products);
+        });
+        // throw new Error();
+    } catch (e) {
+        console.log(e);
+        response.json({"message": "Transaction Rollbacked"});
+    }
 });
-
 
 module.exports = router;

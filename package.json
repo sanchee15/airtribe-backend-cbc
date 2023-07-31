@@ -15,6 +15,7 @@
     "latest-version": "^7.0.0",
     "mysql2": "^3.2.4",
     "nodemon": "^2.0.22",
+    "redis": "^4.6.6",
     "sequelize": "^6.31.0"
   }
 }
