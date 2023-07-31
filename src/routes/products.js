@@ -114,6 +114,27 @@ router.get('/product_with_attributes/:id', async(request, response) => {
 });
 
 
+router.get('/product_attributes/:id', async(request, response) => {
+    const key = "product_attributes:" + request.params.id
+    
+    attribute_dict = {}
+
+    redisClient.get(key).then(function(success){
+        attribute_dict = JSON.parse(success);
+    }).catch(function(error){
+        console.log(error);
+    });
+
+    const product = await Product.findOne({
+        where: {
+            id: parseInt(request.params.id)
+        }
+    });
+    merged_dicts = Object.assign({}, attribute_dict, product.dataValues);
+    response.status(200).json(merged_dicts);
+});
+
+
 router.patch('/product/:id/stock_update_managed', async(request, response) => {
     const data = request.body;
     const requested_id = parseInt(request.params.id);
