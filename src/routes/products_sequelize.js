@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const sequalize = require('../configs/mysqldb').sequalize;
 const redisClient = require('../configs/redis').redisClient;
-const Product = require('../models/products').Product;
-const ProductAttributes = require('../models/products').ProductAttributes;
+const Product = require('../models/products_sequelize').Product;
+const ProductAttributes = require('../models/products_sequelize').ProductAttributes;
 
 
 router.get('/products', async(request, response) => {
