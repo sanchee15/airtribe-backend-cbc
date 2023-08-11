@@ -10,12 +10,14 @@ router.get('/products', async(request, response) => {
 
 
 router.post('/products', async(request, response) => {
-    const {name, price, stock} = request.body;
+    const {name, price, stock, attributes, length} = request.body;
 
     const product = await new Product({
         'name': name,
         'price': price,
-        'stock': stock
+        'stock': stock,
+        'attributes': attributes,
+        'length': length
     })
 
     product.save().then(function(success){

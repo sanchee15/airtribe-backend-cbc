@@ -4,7 +4,10 @@ const productSchema = new mongoose.Schema({
   id: Number,
   name: String,
   price: Number,
-  stock: Number
+  stock: Number,
+  attributes: {color: String},
+  length: Number
+
 });
 
 const Product = mongoose.model('Product', productSchema);
