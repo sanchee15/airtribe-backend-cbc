@@ -5,12 +5,17 @@ const Sequalize = require('sequelize');
 // Sequalize (database_name, user_name, password, {dialect: database, host: host})
 
 const sequalize = new Sequalize(
-		'c2_lecture_2', 
+		'c3_lecture_3',
 		'root',
-		'Airtribe@23',{
+		'Airtribe@23', {
 			dialect: 'mysql',
-			host: 'localhost'
-		});
+			host: 'localhost',
+			pool: {
+    			max: 5,
+    			min: 0,
+    			idle: 10000
+  			}
+  		});
 
 // Check the connection to database - calling authenticate method
 
